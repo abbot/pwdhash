@@ -133,11 +133,7 @@ def apply_constraints(phash, size, nonalphanumeric):
         result += '+'
 
     while len(nonword.findall(result)) != 0 and not nonalphanumeric:
-        print "in while:", result
         result = nonword.sub(next_between('A', 'Z'), result, 1)
-        print "after sub:", result
-
-    print "after while:", result
 
     amount = extras.next() % len(result)
     result = result[amount:] + result[0:amount]
