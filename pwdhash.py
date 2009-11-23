@@ -79,18 +79,21 @@ def extract_domain(host):
     return domain
 
 
+_password_prefix = '@@'
+
+
 def generate(password, uri):
     """
     generate the pwdhash password for master password and uri or
     domain name.
     """
     realm = extract_domain(uri)
-    if password.startswith('@@'):
-        password = password[2:]
+    if password.startswith(_password_prefix):
+        password = password[len(_password_prefix):]
 
     password_hash = b64_hmac_md5(password, realm)
-    size = len(password) + 2
-    nonalphanumeric = len(re.findall(r'\W', password_hash)) != 0
+    size = len(password) + len(_password_prefix)
+    nonalphanumeric = len(re.findall(r'\W', password)) != 0
 
     return apply_constraints(password_hash, size, nonalphanumeric)
 
@@ -104,10 +107,6 @@ def apply_constraints(phash, size, nonalphanumeric):
     """
     starting_size = size - 4
     result = phash[:starting_size]
-
-    def zeros():
-        while True:
-            yield 0
 
     extras = itertools.chain((ord(ch) for ch in phash[starting_size:]),
                              itertools.repeat(0))
@@ -134,7 +133,11 @@ def apply_constraints(phash, size, nonalphanumeric):
         result += '+'
 
     while len(nonword.findall(result)) != 0 and not nonalphanumeric:
-        result = nonword.sub(next_between('A', 'Z'), result)
+        print "in while:", result
+        result = nonword.sub(next_between('A', 'Z'), result, 1)
+        print "after sub:", result
+
+    print "after while:", result
 
     amount = extras.next() % len(result)
     result = result[amount:] + result[0:amount]
@@ -157,9 +160,9 @@ def console_main():
     if 'DISPLAY' in os.environ:
         try:
             import gtk
-            cb = gtk.Clipboard()
-            cb.set_text(generated)
-            cb.store()
+            clip = gtk.Clipboard()
+            clip.set_text(generated)
+            clip.store()
             copied_to_clipboard = True
         except:
             pass
