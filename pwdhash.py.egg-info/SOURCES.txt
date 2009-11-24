@@ -1,0 +1,9 @@
+pwdhash.py
+setup.cfg
+setup.py
+pwdhash.py.egg-info/PKG-INFO
+pwdhash.py.egg-info/SOURCES.txt
+pwdhash.py.egg-info/dependency_links.txt
+pwdhash.py.egg-info/entry_points.txt
+pwdhash.py.egg-info/not-zip-safe
+pwdhash.py.egg-info/top_level.txt
