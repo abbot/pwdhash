@@ -152,8 +152,20 @@ def console_main():
     generated = generate(password, domain)
 
     copied_to_clipboard = False
-    
-    if 'DISPLAY' in os.environ:
+
+    if sys.platform == "darwin":
+        import subprocess
+        try:
+            pb = subprocess.Popen("pbcopy", stdin=subprocess.PIPE, 
+                                  stdout=open("/dev/null", "w"), 
+                                  stderr=open("/dev/null", "w"))
+            pb.communicate(generated)
+            pb.wait()
+            if pb.returncode == 0:
+                copied_to_clipboard = True
+        except:
+            pass
+    elif 'DISPLAY' in os.environ:
         try:
             import gtk
             clip = gtk.Clipboard()
