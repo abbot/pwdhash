@@ -3,7 +3,7 @@
 
 from setuptools import setup, find_packages
 
-version = '0.1'
+version = '0.1.1'
 
 setup(name='pwdhash.py',
       version=version,
@@ -11,9 +11,10 @@ setup(name='pwdhash.py',
       long_description="""\
 Implementation of theft-resistant password generation algorithm known as
 Stanford PwdHash (https://www.pwdhash.com/)""",
-      classifiers=['Development Status :: 4 - Beta',
+      classifiers=['Development Status :: 5 - Production/Stable',
                    'Environment :: Console',
                    'Environment :: X11 Applications',
+                   'Environment :: MacOS X',
                    'License :: OSI Approved :: BSD License',
                    'Operating System :: OS Independent',
                    'Programming Language :: Python',
@@ -23,7 +24,7 @@ Stanford PwdHash (https://www.pwdhash.com/)""",
       keywords='pwdhash',
       author='Lev Shamardin',
       author_email='shamardin@gmail.com',
-      url='http://bitbucket.org/abbot/pwdhash/',
+      url='https://github.com/abbot/pwdhash',
       license='BSD',
       py_modules=['pwdhash'],
       zip_safe=False,
