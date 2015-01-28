@@ -1,8 +1,8 @@
-Metadata-Version: 1.0
+Metadata-Version: 1.1
 Name: pwdhash.py
-Version: 0.1
+Version: 0.1.1
 Summary: Python Stanford PwdHash implementation
-Home-page: http://bitbucket.org/abbot/pwdhash/
+Home-page: https://github.com/abbot/pwdhash
 Author: Lev Shamardin
 Author-email: shamardin@gmail.com
 License: BSD
@@ -10,9 +10,10 @@ Description: Implementation of theft-resistant password generation algorithm kno
         Stanford PwdHash (https://www.pwdhash.com/)
 Keywords: pwdhash
 Platform: UNKNOWN
-Classifier: Development Status :: 4 - Beta
+Classifier: Development Status :: 5 - Production/Stable
 Classifier: Environment :: Console
 Classifier: Environment :: X11 Applications
+Classifier: Environment :: MacOS X
 Classifier: License :: OSI Approved :: BSD License
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python
