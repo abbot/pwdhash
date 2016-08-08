@@ -1,3 +1,0 @@
-[console_scripts]
-pwdhash = pwdhash:console_main
-

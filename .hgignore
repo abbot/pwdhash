@@ -2,3 +2,9 @@ syntax: glob
 ref-js
 .ropeproject
 *.pyc
+*.egg-info/
+dist/
+build/
+.cache/
+__pycache__
+.tox

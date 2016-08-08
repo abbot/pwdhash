@@ -1,8 +1,21 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
 
 import re
+import sys
 import hmac
+import codecs
+import hashlib
+import getpass
 import itertools
+
+
+PY2 = sys.version_info[0] < 3
+
+if PY2:
+    input = raw_input
 
 
 def b64_hmac_md5(key, data):
@@ -10,8 +23,31 @@ def b64_hmac_md5(key, data):
     return base64-encoded HMAC-MD5 for key and data, with trailing '='
     stripped.
     """
-    bdigest = hmac.HMAC(key, data).digest().encode('base64').strip()
+
+    # For Py3 and Unicode compatibility
+    data = str2bytes(data)
+    key = str2bytes(key)
+
+    # In Py3 hmac.digest() returns bytes, so
+    digest = hmac.HMAC(key, data, hashlib.md5).digest()
+    bdigest = codecs.encode(digest, 'base64').decode().strip()
+
     return re.sub('=+$', '', bdigest)
+
+
+def str2bytes(string):
+    """
+    Returns string encoded to bytes, in way that every letter is represented
+    by only first byte after encoding it with 'UTF-16-LE' encoding.
+    For ascii characters this means that its return is the same as
+    str.encode(), but for other unicode strings (eg. Polish) this does its job.
+    Example: str2bytes('ąśćóasco') --> b'\x05[\x07\xf3asco'
+    """
+    u16le = 'utf-16-le'
+    if PY2:
+        sse = sys.stdin.encoding or 'utf-8'
+        return ''.join([ltr.decode(sse).encode(u16le)[0] for ltr in string])
+    return bytes([letter.encode(u16le)[0] for letter in string])
 
 
 # set of domain suffixes to be kept
@@ -93,7 +129,7 @@ def generate(password, uri):
 
     password_hash = b64_hmac_md5(password, realm)
     size = len(password) + len(_password_prefix)
-    nonalphanumeric = len(re.findall(r'\W', password)) != 0
+    nonalphanumeric = len(re.findall(r'[^a-zA-Z0-9_]', password)) != 0
 
     return apply_constraints(password_hash, size, nonalphanumeric)
 
@@ -106,6 +142,7 @@ def apply_constraints(phash, size, nonalphanumeric):
     if there should be at least one alphanumeric or not.
     """
     starting_size = size - 4
+    starting_size = 0 if starting_size < 0 else starting_size
     result = phash[:starting_size]
 
     extras = itertools.chain((ord(ch) for ch in phash[starting_size:]),
@@ -115,70 +152,54 @@ def apply_constraints(phash, size, nonalphanumeric):
 
     def next_between(start, end):
         interval = ord(end) - ord(start) + 1
-        offset = extras.next() % interval
+        offset = next(extras) % interval
         return chr(ord(start) + offset)
 
     for elt, repl in (
-        (re.compile('[A-Z]'), lambda: next_between('A', 'Z')),
-        (re.compile('[a-z]'), lambda: next_between('a', 'z')),
-        (re.compile('[0-9]'), lambda: next_between('0', '9'))):
+            (re.compile('[A-Z]'), lambda: next_between('A', 'Z')),
+            (re.compile('[a-z]'), lambda: next_between('a', 'z')),
+            (re.compile('[0-9]'), lambda: next_between('0', '9'))):
         if len(elt.findall(result)) != 0:
-            result += extra_chars.next()
+            result += next(extra_chars)
         else:
             result += repl()
 
     if len(nonword.findall(result)) != 0 and nonalphanumeric:
-        result += extra_chars.next()
+        result += next(extra_chars)
     else:
         result += '+'
 
     while len(nonword.findall(result)) != 0 and not nonalphanumeric:
         result = nonword.sub(next_between('A', 'Z'), result, 1)
 
-    amount = extras.next() % len(result)
+    amount = next(extras) % len(result)
     result = result[amount:] + result[0:amount]
 
     return result
 
 
 def console_main():
-    import getpass, sys, os
     if len(sys.argv) > 1:
         domain = sys.argv[1]
     else:
-        domain = raw_input("domain: ").strip()
+        domain = input("Domain: ").strip()
 
-    password = getpass.getpass("Password for %s: " % domain)
+    password = getpass.getpass("Password for {}: ".format(domain))
     generated = generate(password, domain)
 
     copied_to_clipboard = False
 
-    if sys.platform == "darwin":
-        import subprocess
-        try:
-            pb = subprocess.Popen("pbcopy", stdin=subprocess.PIPE, 
-                                  stdout=open("/dev/null", "w"), 
-                                  stderr=open("/dev/null", "w"))
-            pb.communicate(generated)
-            pb.wait()
-            if pb.returncode == 0:
-                copied_to_clipboard = True
-        except:
-            pass
-    elif 'DISPLAY' in os.environ:
-        try:
-            import gtk
-            clip = gtk.Clipboard()
-            clip.set_text(generated)
-            clip.store()
-            copied_to_clipboard = True
-        except:
-            pass
+    try:
+        import pyperclip
+        pyperclip.copy(generated)
+        copied_to_clipboard = True
+    except ImportError:
+        pass
 
     if copied_to_clipboard:
-        print "Password was copied to clipboard."
+        print("Password was copied to clipboard.")
     else:
-        print generated
+        print(generated)
 
 if __name__ == '__main__':
     console_main()
