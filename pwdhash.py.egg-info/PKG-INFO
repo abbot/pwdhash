@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: pwdhash.py
-Version: 0.1.1
+Version: 0.1.3
 Summary: Python Stanford PwdHash implementation
 Home-page: https://github.com/abbot/pwdhash
 Author: Lev Shamardin

@@ -27,6 +27,7 @@ Stanford PwdHash (https://www.pwdhash.com/)""",
       url='https://github.com/abbot/pwdhash',
       license='BSD',
       py_modules=['pwdhash'],
+      test_suite='tests',
       zip_safe=False,
       entry_points={ 'console_scripts': [ 'pwdhash = pwdhash:console_main' ] },
       )
