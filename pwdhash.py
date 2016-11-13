@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
-import re
+import hashlib
 import hmac
 import itertools
-
+import re
+import sys
 
 def b64_hmac_md5(key, data):
     """
     return base64-encoded HMAC-MD5 for key and data, with trailing '='
     stripped.
     """
-    bdigest = hmac.HMAC(key, data).digest().encode('base64').strip()
+    bdigest = hmac.new(key, data, hashlib.md5).digest().encode('base64').strip()
     return re.sub('=+$', '', bdigest)
 
 
@@ -176,9 +177,9 @@ def console_main():
             pass
 
     if copied_to_clipboard:
-        print "Password was copied to clipboard."
+        sys.stdout.write("Password was copied to clipboard.\n")
     else:
-        print generated
+        sys.stdout.write(generated+"\n")
 
 if __name__ == '__main__':
     console_main()

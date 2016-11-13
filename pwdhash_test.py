@@ -25,3 +25,6 @@ class TestGeneratedPasswords(unittest.TestCase):
 		def test_applyconstraints(self):
 				self.assertEqual(pwdhash.apply_constraints("5vY9jidbW9wPvvubi1ilRw", 3, False),
 						"9FBo")
+
+if __name__ == '__main__':
+		unittest.main()
