@@ -105,7 +105,7 @@ def apply_constraints(phash, size, nonalphanumeric):
     case, one digit, and we look at the user's password to determine
     if there should be at least one alphanumeric or not.
     """
-    starting_size = size - 4
+    starting_size = max(0, size - 4)
     result = phash[:starting_size]
 
     extras = itertools.chain((ord(ch) for ch in phash[starting_size:]),
@@ -156,8 +156,8 @@ def console_main():
     if sys.platform == "darwin":
         import subprocess
         try:
-            pb = subprocess.Popen("pbcopy", stdin=subprocess.PIPE, 
-                                  stdout=open("/dev/null", "w"), 
+            pb = subprocess.Popen("pbcopy", stdin=subprocess.PIPE,
+                                  stdout=open("/dev/null", "w"),
                                   stderr=open("/dev/null", "w"))
             pb.communicate(generated)
             pb.wait()
