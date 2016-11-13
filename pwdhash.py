@@ -1,17 +1,35 @@
 #!/usr/bin/env python
 
-import hashlib
+import base64
 import hmac
 import itertools
 import re
 import sys
+
+# Python 2.4 compatibility
+try:
+    import hashlib
+    _md5 = hashlib.md5
+except ImportError:
+    import md5
+    _md5 = md5
+try:
+    next(iter("a"))
+except NameError:
+    def next(x):
+        return x.next()
+# Python 2.x and Python 3.0(?) compatiblity
+try:
+    input = raw_input
+except NameError:
+    pass
 
 def b64_hmac_md5(key, data):
     """
     return base64-encoded HMAC-MD5 for key and data, with trailing '='
     stripped.
     """
-    bdigest = hmac.new(key, data, hashlib.md5).digest().encode('base64').strip()
+    bdigest = base64.b64encode(hmac.new(key, data, _md5).digest()).strip().decode("utf-8")
     return re.sub('=+$', '', bdigest)
 
 
@@ -92,7 +110,7 @@ def generate(password, uri):
     if password.startswith(_password_prefix):
         password = password[len(_password_prefix):]
 
-    password_hash = b64_hmac_md5(password, realm)
+    password_hash = b64_hmac_md5(password.encode("utf-8"), realm.encode("utf-8"))
     size = len(password) + len(_password_prefix)
     nonalphanumeric = len(re.findall(r'\W', password)) != 0
 
@@ -116,7 +134,7 @@ def apply_constraints(phash, size, nonalphanumeric):
 
     def next_between(start, end):
         interval = ord(end) - ord(start) + 1
-        offset = extras.next() % interval
+        offset = next(extras) % interval
         return chr(ord(start) + offset)
 
     for elt, repl in (
@@ -124,19 +142,19 @@ def apply_constraints(phash, size, nonalphanumeric):
         (re.compile('[a-z]'), lambda: next_between('a', 'z')),
         (re.compile('[0-9]'), lambda: next_between('0', '9'))):
         if len(elt.findall(result)) != 0:
-            result += extra_chars.next()
+            result += next(extra_chars)
         else:
             result += repl()
 
     if len(nonword.findall(result)) != 0 and nonalphanumeric:
-        result += extra_chars.next()
+        result += next(extra_chars)
     else:
         result += '+'
 
     while len(nonword.findall(result)) != 0 and not nonalphanumeric:
         result = nonword.sub(next_between('A', 'Z'), result, 1)
 
-    amount = extras.next() % len(result)
+    amount = next(extras) % len(result)
     result = result[amount:] + result[0:amount]
 
     return result
@@ -147,7 +165,7 @@ def console_main():
     if len(sys.argv) > 1:
         domain = sys.argv[1]
     else:
-        domain = raw_input("domain: ").strip()
+        domain = input("domain: ").strip()
 
     password = getpass.getpass("Password for %s: " % domain)
     generated = generate(password, domain)

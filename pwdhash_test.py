@@ -15,6 +15,7 @@ class TestGeneratedPasswords(unittest.TestCase):
 						"aB": "4BMm",
 						"aB1": "Js0Ad",
 						"aB1.": "+4wVkg",
+						"aBc1.": "+J5MEzq",
 				}
 				domain = "example.com"
 				for master, pwd in passwords.items():
