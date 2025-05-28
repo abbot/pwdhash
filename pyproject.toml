@@ -1,34 +1,35 @@
-#!/usr/bin/env python
-# -*- encoding: utf-8 -*-
+[project]
+name = "pwdhash.py"
+version = "0.1.3"
+description = "Python Stanford PwdHash implementation"
+authors = [
+    {name = "Lev Shamardin", email = "shamardin@gmail.com"},
+]
+requires-python = ">=3.8"
+readme = "README.txt"
+license = {text = "BSD"}
+keywords = ["pwdhash"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Environment :: MacOS X",
+    "Environment :: X11 Applications",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
 
-from setuptools import setup, find_packages
+[project.urls]
+Repository = "https://github.com/abbot/pwdhash"
 
-version = '0.1.3'
+[project.scripts]
+pwdhash = "pwdhash:console_main"
 
-setup(name='pwdhash.py',
-      version=version,
-      description='Python Stanford PwdHash implementation',
-      long_description="""\
-Implementation of theft-resistant password generation algorithm known as
-Stanford PwdHash (https://www.pwdhash.com/)""",
-      classifiers=['Development Status :: 5 - Production/Stable',
-                   'Environment :: Console',
-                   'Environment :: X11 Applications',
-                   'Environment :: MacOS X',
-                   'License :: OSI Approved :: BSD License',
-                   'Operating System :: OS Independent',
-                   'Programming Language :: Python',
-                   'Topic :: Internet',
-                   'Topic :: Software Development :: Libraries :: Python Modules',
-                   'Topic :: Utilities'],
-      keywords='pwdhash',
-      author='Lev Shamardin',
-      author_email='shamardin@gmail.com',
-      url='https://github.com/abbot/pwdhash',
-      license='BSD',
-      py_modules=['pwdhash'],
-      test_suite='tests',
-      zip_safe=False,
-      entry_points={ 'console_scripts': [ 'pwdhash = pwdhash:console_main' ] },
-      )
-      
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
