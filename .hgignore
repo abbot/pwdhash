@@ -1,4 +1,0 @@
-syntax: glob
-ref-js
-.ropeproject
-*.pyc

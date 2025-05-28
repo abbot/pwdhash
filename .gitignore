@@ -1,0 +1,6 @@
+ref-js/
+.ropeproject
+*.pyc
+*~
+build/
+dist/
