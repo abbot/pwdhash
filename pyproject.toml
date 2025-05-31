@@ -1,6 +1,6 @@
 [project]
 name = "pwdhash.py"
-version = "0.1.3"
+version = "0.2.0"
 description = "Python Stanford PwdHash implementation"
 authors = [
     {name = "Lev Shamardin", email = "shamardin@gmail.com"},
