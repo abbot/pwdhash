@@ -1,35 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import base64
 import hmac
 import itertools
 import re
-import sys
-
-# Python 2.4 compatibility
-try:
-    import hashlib
-    _md5 = hashlib.md5
-except ImportError:
-    import md5
-    _md5 = md5
-try:
-    next(iter("a"))
-except NameError:
-    def next(x):
-        return x.next()
-# Python 2.x and Python 3.0(?) compatiblity
-try:
-    input = raw_input
-except NameError:
-    pass
+import hashlib
 
 def b64_hmac_md5(key, data):
     """
     return base64-encoded HMAC-MD5 for key and data, with trailing '='
     stripped.
     """
-    bdigest = base64.b64encode(hmac.new(key, data, _md5).digest()).strip().decode("utf-8")
+    bdigest = base64.b64encode(hmac.new(key, data, hashlib.md5).digest()).strip().decode("utf-8")
     return re.sub('=+$', '', bdigest)
 
 
@@ -167,7 +149,7 @@ def console_main():
     else:
         domain = input("domain: ").strip()
 
-    password = getpass.getpass("Password for %s: " % domain)
+    password = getpass.getpass(f"Password for {domain}: ")
     generated = generate(password, domain)
 
     copied_to_clipboard = False
@@ -175,23 +157,30 @@ def console_main():
     if sys.platform == "darwin":
         import subprocess
         try:
-            pb = subprocess.Popen("pbcopy", stdin=subprocess.PIPE,
+            pb = subprocess.Popen("pbcopy",
+                                  close_fds=True,
+                                  stdin=subprocess.PIPE,
                                   stdout=open("/dev/null", "w"),
                                   stderr=open("/dev/null", "w"))
-            pb.communicate(generated)
+            pb.communicate(generated.encode("utf-8"))
             pb.wait()
             if pb.returncode == 0:
                 copied_to_clipboard = True
-        except:
+        except Exception:
             pass
     elif 'DISPLAY' in os.environ:
+        import subprocess
         try:
-            import gtk
-            clip = gtk.Clipboard()
-            clip.set_text(generated)
-            clip.store()
-            copied_to_clipboard = True
-        except:
+            pb = subprocess.Popen(["xclip", "-selection", "clipboard"],
+                                  close_fds=True,
+                                  stdin=subprocess.PIPE,
+                                  stdout=open("/dev/null", "w"),
+                                  stderr=open("/dev/null", "w"))
+            pb.communicate(generated.encode("utf-8"))
+            pb.wait()
+            if pb.returncode == 0:
+                copied_to_clipboard = True
+        except Exception:
             pass
 
     if copied_to_clipboard:
