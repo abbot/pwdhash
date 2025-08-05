@@ -3,14 +3,13 @@ Name: pwdhash.py
 Version: 0.2.0
 Summary: Python Stanford PwdHash implementation
 Author-email: Lev Shamardin <shamardin@gmail.com>
-License: BSD
+License-Expression: BSD-3-Clause
 Project-URL: Repository, https://github.com/abbot/pwdhash
 Keywords: pwdhash
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Environment :: Console
 Classifier: Environment :: MacOS X
 Classifier: Environment :: X11 Applications
-Classifier: License :: OSI Approved :: BSD License
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3

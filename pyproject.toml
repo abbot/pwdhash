@@ -7,14 +7,14 @@ authors = [
 ]
 requires-python = ">=3.8"
 readme = "README.txt"
-license = {text = "BSD"}
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 keywords = ["pwdhash"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Environment :: MacOS X",
     "Environment :: X11 Applications",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
